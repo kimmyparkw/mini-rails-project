@@ -1,17 +1,17 @@
 class Api::V1::CoursesController < ApplicationController
     def index
-        @courses = Course.all
+        @courses = Course.where(student_id: params[:student_id])
         render json: @courses
     end
 
     def show
-        @course = Course.find(params[:id])
+        @course = Course.where(student_id: params[:student_id], id: params[:id])
         render json: @course
     end
 
     def create
-        @course = Course.new(course_params)
-        if @course.save
+        @course = Course.create(title: params["title"], subject: params["subject"], student_id: params["student_id"])
+        if @course
             render json: @course
         else
             render error: { error: 'Unable to create course' }, status: 400
@@ -19,6 +19,7 @@ class Api::V1::CoursesController < ApplicationController
     end
 
     def update
+        @course = Course.where(student_id: params[:student_id], id: params[:id])
         if @course
             @course.update(course_params)
             render json: { message: 'Course successfully updated.' }, status: 200
@@ -28,6 +29,7 @@ class Api::V1::CoursesController < ApplicationController
     end
 
     def destroy
+        @course = Course.where(title: params["title"], subject: params["subject"], student_id: params["student_id"])
         if @course
             @course.destroy
             render json: { message: 'Course has ended.' }, status: 200
