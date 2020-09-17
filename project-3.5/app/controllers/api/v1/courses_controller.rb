@@ -29,7 +29,7 @@ class Api::V1::CoursesController < ApplicationController
     end
 
     def destroy
-        @course = Course.where(title: params["title"], subject: params["subject"], student_id: params["student_id"])
+        @course = Course.find(params[:id])
         if @course
             @course.destroy
             render json: { message: 'Course has ended.' }, status: 200
